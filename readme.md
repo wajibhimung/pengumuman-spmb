@@ -1,6 +1,5 @@
 # Aplikasi Pengumuman Kelulusan SPMB SMKN 1 Telagasari
 
-![Logo SMKN 1 Telagasari](https://skl.smkn1telagasari.sch.id/logo.png)
 
 Aplikasi web sederhana, responsif, dan mudah dikelola untuk menampilkan hasil kelulusan Seleksi Penerimaan Murid Baru (SPMB). Aplikasi ini dibangun menggunakan Google Sheets sebagai database, Google Apps Script sebagai backend, dan HTML/CSS/JavaScript untuk frontend.
 
