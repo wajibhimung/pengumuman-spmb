@@ -3,96 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temukan NISN Anda - SPMB SMKN 1 Telagasari</title>
-    <link rel="icon" href="https://skl.smkn1telagasari.sch.id/logo.png" type="image/png">
+    <title>Memuat Halaman Bantuan...</title>
+    <link id="favicon" rel="icon" href="" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-blue: #004AAD;
-            --secondary-blue: #003a8c;
-            --accent-yellow: #FBC02D;
-            --whatsapp-green: #25D366;
-            --bg-light: #f0f4f8;
-            --text-dark: #333333;
-            --text-light: #ffffff;
-            --border-color: #e0e0e0;
+            --primary-blue: #004AAD; --secondary-blue: #003a8c; --accent-yellow: #FBC02D;
+            --accent-yellow-dark: #F9A825; --whatsapp-green: #25D366; --bg-light: #f0f4f8;
+            --text-dark: #333333; --text-light: #ffffff; --border-color: #e0e0e0;
         }
-
         *, *::before, *::after { box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif; background-color: var(--bg-light);
-            color: var(--text-dark); margin: 0; padding: 0; min-height: 100vh;
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: var(--text-dark); margin: 0; padding: 0; min-height: 100vh; }
         .body-no-scroll { overflow: hidden; }
+
+        /* Preloader Halaman */
+        #page-preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-light); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        #preloader-logo { max-width: 120px; animation: pulse 1.5s infinite ease-in-out; }
+        #preloader-text { margin-top: 20px; font-weight: 500; color: #555; }
+        #page-preloader.fade-out { opacity: 0; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
+
+        /* Konten Utama */
+        #app-container { visibility: hidden; opacity: 0; transition: opacity 0.5s ease; }
+        #app-container.visible { visibility: visible; opacity: 1; }
         .container { width: 100%; max-width: 700px; margin: 0 auto; padding: 20px; }
-        .page-header {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            color: var(--text-light); padding: 40px 20px; text-align: center;
-        }
+        .page-header { background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue)); color: var(--text-light); padding: 40px 20px; text-align: center; }
         .page-header h1 { margin: 0; font-size: 2rem; }
         .page-header p { margin: 5px 0 0; opacity: 0.9; }
-        .content-card {
-            background-color: var(--text-light); border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0, 74, 173, 0.15);
-            padding: 30px 40px; margin-top: 20px;
-        }
+        .content-card { background-color: var(--text-light); border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 74, 173, 0.15); padding: 30px 40px; margin-top: 20px; }
         .search-area { text-align: center; margin-bottom: 25px; }
         .search-area label { display: block; margin-bottom: 15px; font-size: 1.1rem; color: #555; }
-        .search-area input {
-            width: 100%; max-width: 400px; padding: 14px; font-size: 1rem; text-align: center;
-            border: 2px solid var(--border-color); border-radius: 8px; font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
-        .search-area input:focus {
-            outline: none; border-color: var(--primary-blue);
-            box-shadow: 0 0 0 4px rgba(0, 74, 173, 0.1);
-        }
-        .results-area {
-            margin-top: 20px; max-height: 400px; overflow-y: auto;
-            border: 1px solid var(--border-color); border-radius: 8px;
-        }
-        .result-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; border-bottom: 1px solid var(--border-color);
-            transition: background-color 0.2s ease;
-        }
+        .search-area input { width: 100%; max-width: 400px; padding: 14px; font-size: 1rem; text-align: center; border: 2px solid var(--border-color); border-radius: 8px; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
+        .search-area input:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(0, 74, 173, 0.1); }
+        .results-area { margin-top: 20px; max-height: 400px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; }
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border-color); transition: background-color 0.2s ease; }
         .result-item:last-child { border-bottom: none; }
         .result-item:hover { background-color: #f7f9fc; }
         .result-item .info { display: flex; flex-direction: column; }
         .result-item .name { font-weight: 600; font-size: 1.05rem; color: var(--primary-blue); }
         .result-item .school { font-size: 0.9rem; color: #555; }
-        .result-item .show-nisn-btn {
-            padding: 8px 12px; font-size: 0.9rem; font-weight: 600; color: var(--text-dark);
-            background-color: var(--accent-yellow); border: none; border-radius: 6px; cursor: pointer;
-            flex-shrink: 0; margin-left: 15px;
-        }
+        .result-item .show-nisn-btn { padding: 8px 12px; font-size: 0.9rem; font-weight: 600; color: var(--text-dark); background-color: var(--accent-yellow); border: none; border-radius: 6px; cursor: pointer; flex-shrink: 0; margin-left: 15px; }
         .status-message { text-align: center; padding: 40px 20px; font-weight: 500; color: #777; }
-        
-        /* --- KELOMPOK LINK AKSI DI BAWAH --- */
-        .action-links {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        .back-link, .help-link {
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: opacity 0.2s ease;
-        }
+        .action-links { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
+        .back-link, .help-link { text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.2s ease; }
         .back-link { color: var(--primary-blue); }
         .help-link { color: var(--whatsapp-green); }
         .back-link:hover, .help-link:hover { opacity: 0.8; }
         .help-link svg { width: 20px; height: 20px; fill: currentColor; }
         
-        /* Modal Styling (tidak ada perubahan) */
+        /* Modal Styling */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.3s ease; }
         .modal-content { background-color: white; padding: 25px 30px; border-radius: 12px; width: 90%; max-width: 450px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: scaleUp 0.3s ease; text-align: center; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -109,7 +70,6 @@
 
         @media (max-width: 600px) {
             .container { padding: 10px; }
-            .page-header { padding: 30px 15px; }
             .page-header h1 { font-size: 1.6rem; }
             .content-card { padding: 25px 20px; }
             .search-area label { font-size: 1rem; }
@@ -117,44 +77,51 @@
             .result-item .show-nisn-btn { align-self: flex-start; }
             .modal-content { padding: 25px 20px; }
             .modal-footer { flex-direction: column; }
-            /* Penyesuaian untuk action-links di mobile */
             .action-links { flex-direction: column-reverse; gap: 20px; align-items: center; }
         }
     </style>
 </head>
 <body>
 
-    <header class="page-header">
-        <h1>Temukan NISN Anda</h1>
-        <p>SPMB SMKN 1 TELAGASARI TAHUN AJARAN 2025/2026</p>
-    </header>
+    <div id="page-preloader">
+        <img id="preloader-logo" src="https://skl.smkn1telagasari.sch.id/logo.png" alt="Logo Sekolah">
+        <p id="preloader-text">Memuat halaman...</p>
+    </div>
+    
+    <div id="app-container">
+        <header class="page-header">
+            <h1>Temukan NISN Anda</h1>
+            <p id="headerSubtitle"></p>
+        </header>
 
-    <main class="container">
-        <div class="content-card">
-            <div class="search-area">
-                <label for="nameFilter">Ketik beberapa huruf dari nama lengkap Anda untuk memulai pencarian.</label>
-                <input type="text" id="nameFilter" placeholder="Contoh: Budi Santoso" disabled>
-            </div>
-            
-            <div class="results-area" id="resultsArea">
-                <div class="status-message" id="statusMessage">
-                    Sedang memuat data...
+        <main class="container">
+            <div class="content-card">
+                <div id="searchContainer" style="display: none;">
+                    <div class="search-area">
+                        <label for="nameFilter">Ketik beberapa huruf dari nama lengkap Anda untuk memulai pencarian.</label>
+                        <input type="text" id="nameFilter" placeholder="Contoh: Budi Santoso" disabled>
+                    </div>
+                    <div class="results-area" id="resultsArea">
+                        <div class="status-message" id="statusMessage">
+                            Sedang memuat data...
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="closedMessageContainer" style="display: none; text-align: center; padding: 20px; background-color: #E3F2FD; color: var(--primary-blue); border: 1px solid var(--primary-blue); border-radius: 8px;"></div>
+
+                <div class="action-links">
+                    <a href="index.html" class="back-link">← Kembali ke Halaman Utama</a>
+                    <a id="help-link" href="" class="help-link" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.8 0-67.6-9.5-97.2-26.7l-7-4.1-72.2 19L56 353.7l-4.4-7.3c-18.4-30.6-28.2-66.2-28.2-103.3 0-108.7 88.4-197.1 197.1-197.1 53.3 0 104.1 20.8 141.1 57.8 37.1 37.1 57.8 87.8 57.8 141.1 0 108.6-88.4 197-197 197zM224 139.7c-9.2 0-16.6 7.4-16.6 16.6v127.3c0 9.2 7.4 16.6 16.6 16.6s16.6-7.4 16.6-16.6V156.3c0-9.2-7.4-16.6-16.6-16.6zm0 200.2c-11 0-20 9-20 20s9 20 20 20 20-9 20-20-9-20-20-20z"/></svg>
+                        <span>Butuh Bantuan?</span>
+                    </a>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- BAGIAN INI TELAH DIUBAH -->
-            <div class="action-links">
-                <a href="index.html" class="back-link">← Kembali ke Halaman Utama</a>
-                <a href="https://wa.me/6285167436497?text=kak%20aku%20butuh%20bantuan%21" class="help-link" target="_blank">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.8 0-67.6-9.5-97.2-26.7l-7-4.1-72.2 19L56 353.7l-4.4-7.3c-18.4-30.6-28.2-66.2-28.2-103.3 0-108.7 88.4-197.1 197.1-197.1 53.3 0 104.1 20.8 141.1 57.8 37.1 37.1 57.8 87.8 57.8 141.1 0 108.6-88.4 197-197 197zM224 139.7c-9.2 0-16.6 7.4-16.6 16.6v127.3c0 9.2 7.4 16.6 16.6 16.6s16.6-7.4 16.6-16.6V156.3c0-9.2-7.4-16.6-16.6-16.6zm0 200.2c-11 0-20 9-20 20s9 20 20 20 20-9 20-20-9-20-20-20z"/></svg>
-                    <span>Butuh Bantuan?</span>
-                </a>
-            </div>
-            <!-- AKHIR BAGIAN YANG DIUBAH -->
-        </div>
-    </main>
-
-    <!-- Modal (tidak ada perubahan) -->
+    <!-- Modal -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -173,35 +140,70 @@
         </div>
     </div>
 
-    <!-- JavaScript (tidak ada perubahan) -->
     <script>
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxwJppG4y0S4D9uvuM7LowP5JQyO8YsOXwttk8adBNt8dxMrUyxX-_SN64l2aVksRFj/exec';
-        let allStudents = [];
+        
+        // Referensi Elemen
+        const pagePreloader = document.getElementById('page-preloader');
+        const appContainer = document.getElementById('app-container');
+        const favicon = document.getElementById('favicon');
+        const headerSubtitle = document.getElementById('headerSubtitle');
+        const searchContainer = document.getElementById('searchContainer');
         const nameFilterInput = document.getElementById('nameFilter');
         const resultsArea = document.getElementById('resultsArea');
         const statusMessage = document.getElementById('statusMessage');
-        const modalOverlay = document.getElementById('modalOverlay');
-        const modalCloseIcon = document.getElementById('modalCloseIcon');
-        const modalCloseBtn = document.getElementById('modalCloseBtn');
-        const modalStudentName = document.getElementById('modalStudentName');
-        const modalStudentNisn = document.getElementById('modalStudentNisn');
-        const copyNisnBtn = document.getElementById('copyNisnBtn');
-        document.addEventListener('DOMContentLoaded', fetchData);
-        async function fetchData() {
+        const closedMessageContainer = document.getElementById('closedMessageContainer');
+        const helpLink = document.getElementById('help-link');
+
+        let allStudents = [];
+
+        document.addEventListener('DOMContentLoaded', initializePage);
+
+        async function initializePage() {
             try {
                 const response = await fetch(`${WEB_APP_URL}?action=getAllData`);
                 const result = await response.json();
-                if (result.status === 'success') {
+                
+                populatePage(result.settings);
+
+                if (result.status === 'closed') {
+                    searchContainer.style.display = 'none';
+                    closedMessageContainer.textContent = result.message;
+                    closedMessageContainer.style.display = 'block';
+                } else if (result.status === 'success') {
                     allStudents = result.data;
                     statusMessage.textContent = 'Data siap. Silakan ketik nama Anda di atas.';
-                    nameFilterInput.disabled = false; nameFilterInput.focus();
-                } else { statusMessage.textContent = result.message || 'Gagal memuat data dari server.'; }
-            } catch (error) { statusMessage.textContent = 'Terjadi kesalahan koneksi. Periksa jaringan Anda.'; console.error('Fetch Error:', error); }
+                    nameFilterInput.disabled = false;
+                    nameFilterInput.focus();
+                    searchContainer.style.display = 'block';
+                } else {
+                    statusMessage.textContent = result.message || 'Gagal memuat data dari server.';
+                }
+            } catch (error) {
+                statusMessage.textContent = 'Terjadi kesalahan koneksi. Periksa jaringan Anda.';
+                console.error('Fetch Error:', error);
+            } finally {
+                pagePreloader.classList.add('fade-out');
+                appContainer.classList.add('visible');
+                setTimeout(() => { pagePreloader.style.display = 'none'; }, 500);
+            }
         }
+
+        function populatePage(settings) {
+            if (!settings) return;
+            document.title = `Temukan NISN Anda - ${settings.nama_sekolah}`;
+            favicon.href = settings.url_logo;
+            headerSubtitle.textContent = `SPMB ${settings.nama_sekolah} TAHUN AJARAN ${settings.tahun_ajaran}`;
+            const waNumber = settings.nomor_whatsapp_bantuan;
+            const waMessage = encodeURIComponent(settings.pesan_whatsapp);
+            helpLink.href = `https://wa.me/${waNumber}?text=${waMessage}`;
+        }
+
+        // Sisa logika (filter, modal) tetap sama dan tidak perlu diubah
         nameFilterInput.addEventListener('input', filterData);
         function filterData() {
             const nameQuery = nameFilterInput.value.toLowerCase().trim();
-            if (nameQuery === '') { resultsArea.innerHTML = `<div class="status-message" id="statusMessage">Silakan ketik nama Anda di atas.</div>`; return; }
+            if (nameQuery === '') { resultsArea.innerHTML = `<div class="status-message">Silakan ketik nama Anda di atas.</div>`; return; }
             const filteredStudents = allStudents.filter(student => student.nama.toLowerCase().includes(nameQuery));
             displayResults(filteredStudents);
         }
@@ -209,6 +211,14 @@
             if (students.length === 0) { resultsArea.innerHTML = `<div class="status-message">Data tidak ditemukan. Coba periksa kembali ejaan nama Anda.</div>`; return; }
             resultsArea.innerHTML = students.map(student => `<div class="result-item"><div class="info"><span class="name">${student.nama}</span><span class="school">${student.asal_smp}</span></div><button class="show-nisn-btn" onclick="openModal('${student.nama}', '${student.nisn}')">Lihat NISN</button></div>`).join('');
         }
+        
+        // Logika Modal
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalCloseIcon = document.getElementById('modalCloseIcon');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const modalStudentName = document.getElementById('modalStudentName');
+        const modalStudentNisn = document.getElementById('modalStudentNisn');
+        const copyNisnBtn = document.getElementById('copyNisnBtn');
         function openModal(name, nisn) {
             modalStudentName.textContent = name; modalStudentNisn.textContent = nisn;
             copyNisnBtn.onclick = () => copyNisnToClipboard(nisn, copyNisnBtn);
