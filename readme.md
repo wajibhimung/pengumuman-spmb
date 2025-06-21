@@ -1,95 +1,128 @@
-# Aplikasi Pengumuman Hasil Seleksi SPMB SMKN 1 Telagasari
+# Aplikasi Pengumuman Kelulusan SPMB/PPDB Online
 
 
-Aplikasi web sederhana, responsif, dan mudah dikelola untuk menampilkan hasil kelulusan Seleksi Penerimaan Murid Baru (SPMB). Aplikasi ini dibangun menggunakan Google Sheets sebagai database, Google Apps Script sebagai backend, dan HTML/CSS/JavaScript untuk frontend.
 
+Aplikasi web modern, responsif, dan dinamis untuk menampilkan pengumuman hasil seleksi siswa baru. Dibangun menggunakan Google Sheets sebagai database, Google Apps Script sebagai backend, dan HTML/CSS/JavaScript murni untuk frontend.
 
----
-
-## ✨ Fitur Utama
-
--   **Pencarian Real-time:** Siswa dapat mengecek status kelulusan secara instan hanya dengan memasukkan NISN.
--   **Manajemen Data Mudah:** Seluruh data siswa dikelola sepenuhnya melalui Google Sheets. Panitia tidak perlu menyentuh kode untuk memperbarui data.
--   **Fitur Lupa NISN:** Halaman bantuan interaktif memungkinkan siswa menemukan NISN mereka hanya dengan mengetikkan nama.
--   **Modal Modern:** Tampilan NISN menggunakan modal yang modern, lengkap dengan tombol "Salin NISN".
--   **Tombol Bantuan WhatsApp:** Tombol melayang (Floating Action Button) dan link bantuan untuk akses cepat ke kontak panitia via WhatsApp.
--   **Desain Responsif:** Tampilan optimal di berbagai perangkat, mulai dari desktop hingga smartphone.
--   **Backend Tanpa Server (Serverless):** Dibangun di atas platform Google yang andal dan gratis.
+Aplikasi ini dirancang agar sangat mudah dikelola oleh panitia non-teknis melalui Google Sheets, tanpa perlu menyentuh kode sama sekali setelah setup awal.
 
 ---
 
-## ⚙️ Arsitektur & Teknologi
+## Fitur Utama
 
-Aplikasi ini bekerja dengan alur yang sederhana namun efektif:
-
-1.  **Google Sheets:** Bertindak sebagai database utama untuk menyimpan data siswa (NISN, Nama, Asal SMP, Jurusan, Keterangan).
-2.  **Google Apps Script:** Berfungsi sebagai API (backend) yang di-deploy sebagai Web App. Script ini bertugas:
-    -   Menerima permintaan dari frontend.
-    -   Mencari data yang sesuai di Google Sheets.
-    -   Mengirimkan kembali hasilnya dalam format JSON.
-3.  **Frontend (HTML, CSS, JS):** Dua file HTML (`index.html` dan `lupa-nisn.html`) yang menjadi antarmuka pengguna. Halaman ini yang mengirim permintaan `fetch` ke URL Web App Apps Script dan menampilkan hasilnya secara dinamis.
+*   **Backend Tanpa Server:** Sepenuhnya berjalan di atas infrastruktur Google (Sheets & Apps Script).
+*   **Pengelolaan Dinamis:**
+    *   **Kontrol Penuh dari Google Sheets:** Nama sekolah, tahun ajaran, URL logo, dan kontak bantuan dapat diubah langsung dari sheet `Settings`.
+    *   **Buka/Tutup Pengumuman:** Mengaktifkan atau menonaktifkan pengumuman hanya dengan mengubah satu sel di sheet `Settings`.
+*   **Antarmuka Modern & Responsif:**
+    *   Tampilan bersih dan profesional yang otomatis menyesuaikan diri di perangkat desktop maupun mobile.
+    *   Animasi preloader halaman untuk pengalaman memuat yang mulus.
+*   **Fitur Ramah Pengguna:**
+    *   **Halaman Lupa NISN:** Siswa dapat mencari NISN mereka hanya dengan mengetikkan sebagian nama.
+    *   **Modal Modern:** Hasil pencarian NISN ditampilkan dalam modal yang elegan, bukan `alert()` kuno.
+    *   **Tombol Salin & Bantuan:** Tombol untuk menyalin NISN dan tombol bantuan via WhatsApp terintegrasi.
 
 ---
 
-## 🔧 Panduan Instalasi & Setup
+## Teknologi yang Digunakan
 
-Ikuti langkah-langkah berikut untuk men-deploy aplikasi ini dari awal.
+*   **Backend:** Google Apps Script
+*   **Database:** Google Sheets
+*   **Frontend:** HTML5, CSS3, JavaScript (ES6+)
 
-### **Langkah 1: Siapkan Google Sheet**
+---
 
-1.  Buat Google Sheet baru di [sheets.google.com](https://sheets.google.com).
-2.  Pada baris pertama, buat header kolom dengan urutan **wajib** sebagai berikut:
-    | A | B | C | D | E | F |
-    | :--- | :--- | :--- | :--- | :--- | :--- |
-    | **No** | **NISN** | **Nama** | **Asal SMP** | **Jurusan** | **Keterangan** |
-3.  Isi data siswa mulai dari baris kedua. Pastikan kolom `Keterangan` diisi dengan `LULUS` atau `TIDAK LULUS`.
-4.  Salin **ID Spreadsheet** Anda. ID ini adalah bagian dari URL, contoh: `https://docs.google.com/spreadsheets/d/`**`1aBcDeFgHiJkLmNoPqRsTuVwXyZ_12345-abcdefg`**`/edit`.
+## Panduan Instalasi dan Konfigurasi
 
-### **Langkah 2: Konfigurasi Google Apps Script**
+Ikuti langkah-langkah ini untuk menjalankan aplikasi Anda sendiri.
 
-1.  Dari Google Sheet Anda, buka **Ekstensi** > **Apps Script**.
-2.  Hapus kode contoh dan tempelkan seluruh isi file `Code.gs` dari repositori ini.
-3.  Di dalam `Code.gs`, ganti `GANTI_DENGAN_ID_SPREADSHEET_ANDA` dengan ID Spreadsheet yang Anda salin pada langkah sebelumnya.
+### Langkah 1: Persiapan Google Sheets
+
+Ini adalah "Panel Kontrol" utama dari aplikasi Anda.
+
+1.  **Buat Spreadsheet Baru:** Buka [sheets.google.com](https://sheets.google.com) dan buat spreadsheet baru. Beri nama, misalnya, `Database SPMB 2025`.
+
+2.  **Buat Sheet `Data Siswa`:**
+    *   Biarkan sheet pertama bernama `Sheet1` (atau ganti namanya sesuai keinginan, tapi pastikan nama ini sesuai dengan variabel `DATA_SHEET_NAME` di dalam kode `Code.gs`).
+    *   Buat kolom dengan header yang **tepat** seperti di bawah ini di baris pertama:
+        | A | B | C | D | E | F |
+        |---|---|---|---|---|---|
+        | **No** | **NISN** | **Nama** | **Asal SMP** | **Jurusan** | **Keterangan** |
+    *   Isi data siswa mulai dari baris kedua. Pada kolom `Keterangan`, isi dengan `LULUS` atau `TIDAK LULUS`.
+
+3.  **Buat Sheet `Settings`:**
+    *   Klik ikon `+` untuk membuat sheet baru. Ganti namanya menjadi `Settings`.
+    *   Buat struktur *key-value* berikut di kolom A dan B:
+
+        | A (Setting) | B (Value) |
+        |---|---|
+        | Nama Sekolah | SMKN 1 TELAGASARI |
+        | Tahun Ajaran | 2025/2026 |
+        | URL Logo | https://skl.smkn1telagasari.sch.id/logo.png |
+        | Nomor WhatsApp Bantuan | 6285167436497 |
+        | Pesan WhatsApp | Kak, aku butuh bantuan! |
+        | Status Pengumuman | BUKA |
+        | Pesan Saat Ditutup | Pengumuman akan dibuka pada tanggal dan waktu yang telah ditentukan. |
+        | Copyright Year | 2025 |
+
+    > **PENTING:** Untuk `Status Pengumuman`, ketik `BUKA` untuk mengaktifkan aplikasi. Ketik nilai lain (misal: `TUTUP`) untuk menonaktifkannya dan menampilkan "Pesan Saat Ditutup".
+
+### Langkah 2: Setup Google Apps Script
+
+Ini adalah "mesin" yang menghubungkan data Anda ke website.
+
+1.  **Buka Editor Script:** Dari spreadsheet Anda, klik menu **Ekstensi** > **Apps Script**.
+2.  **Salin Kode:** Hapus semua kode contoh di file `Code.gs` dan salin-tempel seluruh isi file `Code.gs` dari proyek ini.
+3.  **Deploy sebagai Web App:**
+    *   Klik tombol **Deploy** di pojok kanan atas, lalu pilih **New deployment**.
+    *   Klik ikon **gerigi** di sebelah "Select type", lalu pilih **Web app**.
+    *   Isi konfigurasi sebagai berikut:
+        *   **Description:** `API Pengumuman SPMB`
+        *   **Execute as:** `Me`
+        *   **Who has access:** **`Anyone`** (Sangat penting agar bisa diakses publik!)
+    *   Klik **Deploy**.
+    *   Izinkan akses saat diminta (pilih akun Anda, klik *Advanced*, lalu *Go to... (unsafe)*, dan *Allow*).
+    *   Salin **Web app URL** yang muncul. URL ini akan digunakan di langkah berikutnya.
+
+> **Catatan:** Setiap kali Anda mengubah file `Code.gs`, Anda **harus** melakukan Deploy ulang dengan memilih **Manage deployments** > **Edit (ikon pensil)** > **Version: New version** > **Deploy**.
+
+### Langkah 3: Konfigurasi dan Hosting Frontend
+
+Ini adalah file yang akan dilihat oleh pengguna.
+
+1.  **Dapatkan File:** Anda memerlukan dua file: `index.html` dan `lupa-nisn.html`.
+2.  **Update URL API:** Buka kedua file tersebut dengan editor teks. Cari baris di bagian `<script>`:
     ```javascript
-    const SHEET_ID = "GANTI_DENGAN_ID_SPREADSHEET_ANDA";
+    const WEB_APP_URL = 'URL_LAMA_DI_SINI';
     ```
-4.  **Deploy Script:**
-    -   Klik tombol **Deploy** > **New deployment**.
-    -   Klik ikon **gerigi (⚙️)**, pilih **Web app**.
-    -   Pada bagian **Configuration**, atur sebagai berikut:
-        -   **Description**: `API Pengumuman SPMB`
-        -   **Execute as**: `Me`
-        -   **Who has access**: `Anyone` (Sangat Penting!)
-    -   Klik **Deploy**. Izinkan akses jika diminta.
-    -   Salin **Web app URL** yang muncul. Ini adalah URL API Anda.
+    Ganti `URL_LAMA_DI_SINI` dengan **Web app URL** yang Anda salin dari Langkah 2.
+3.  **Hosting:**
+    *   Unggah kedua file (`index.html` dan `lupa-nisn.html`) ke layanan hosting pilihan Anda (misal: cPanel hosting sekolah, GitHub Pages, Netlify, Vercel, dll).
+    *   Pastikan kedua file berada di **direktori yang sama**.
 
-### **Langkah 3: Konfigurasi Frontend (HTML)**
-
-1.  Buka file `index.html` dan `lupa-nisn.html`.
-2.  Cari baris berikut di kedua file tersebut:
-    ```javascript
-    const WEB_APP_URL = 'https://...';
-    ```
-3.  Ganti URL yang ada dengan **Web app URL** yang Anda dapatkan dari Langkah 2.
-
-### **Langkah 4: Hosting File**
-
-1.  Unggah kedua file HTML yang sudah dikonfigurasi (`index.html` dan `lupa-nisn.html`) ke layanan hosting pilihan Anda.
-2.  Pastikan kedua file berada di direktori yang sama.
-3.  Bagikan link ke `index.html` kepada para siswa. Selesai!
+Aplikasi Anda kini sudah live dan siap digunakan!
 
 ---
 
-## 🚀 Pengelolaan Aplikasi (Untuk Panitia)
+## Panduan Pengelolaan Sehari-hari
 
-Setelah aplikasi berjalan, pengelolaan sangatlah mudah:
+### Untuk Administrator / Panitia
 
--   **Menambah/Mengubah Data Siswa:** Cukup buka file Google Sheet Anda dan edit datanya. Perubahan akan **langsung aktif** di website tanpa perlu melakukan deploy ulang.
--   **Mengubah Tampilan/Logika:** Jika Anda ingin mengubah tampilan (CSS) atau logika (JavaScript), edit file HTML yang relevan dan unggah ulang ke hosting Anda.
--   **Mengubah Logika Backend:** Jika Anda mengubah file `Code.gs`, Anda **wajib** melakukan deploy ulang (pilih **Manage deployments** > **Edit** > **New version**) agar perubahan aktif.
+Tugas Anda sekarang sangat mudah dan tidak memerlukan sentuhan teknis.
+
+*   **Mengubah Data Kelulusan:** Cukup buka spreadsheet `Database SPMB`, buka sheet `Sheet1`, dan edit data siswa (nama, NISN, status `Keterangan`, dll). Perubahan akan **langsung aktif** di website.
+*   **Membuka/Menutup Pengumuman:** Buka sheet `Settings`, cari baris `Status Pengumuman`, dan ubah nilainya menjadi `BUKA` atau `TUTUP`.
+*   **Mengganti Tahun Ajaran/Logo:** Cukup ubah nilai yang sesuai di sheet `Settings`.
+
+> Anda **TIDAK PERLU** melakukan deploy ulang Apps Script untuk tugas-tugas di atas.
+
+### Untuk Siswa (Pengguna Akhir)
+
+1.  **Cek Kelulusan:** Buka link utama, masukkan NISN, lalu klik tombol "Cek Hasil Seleksi".
+2.  **Lupa NISN:** Klik link "Lupa atau tidak tahu NISN Anda?", lalu ketik sebagian nama Anda untuk menemukan data dan melihat NISN.
 
 ---
 
-## 📄 Lisensi
+## Lisensi
 
-Proyek ini dilisensikan di bawah **MIT License**. Lihat file `LICENSE` untuk detailnya.
+Proyek ini dilisensikan di bawah Lisensi MIT.
