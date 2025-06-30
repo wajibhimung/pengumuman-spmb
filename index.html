@@ -48,6 +48,16 @@
         .message-container { margin-top: 25px; padding: 20px; border-radius: 8px; font-weight: 500; text-align: center; display: none; }
         .error-message { background-color: #FFEBEE; color: var(--error-red); border: 1px solid var(--error-red); }
         .info-message { background-color: #E3F2FD; color: var(--primary-blue); border: 1px solid var(--primary-blue); }
+        
+        /* Countdown Timer */
+        #countdown-container { text-align: center; display: none; padding: 20px 0; }
+        #countdown-message { font-size: 1.1rem; color: #555; margin-bottom: 25px; line-height: 1.5; }
+        .timer { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .timer-block { background-color: var(--bg-light); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; min-width: 80px; }
+        .timer-block .number { font-size: 2.5rem; font-weight: 700; color: var(--primary-blue); }
+        .timer-block .label { font-size: 0.8rem; text-transform: uppercase; color: #777; }
+        
+        /* Hasil Seleksi */
         .result-container { margin-top: 25px; display: none; }
         .result-card { border-radius: 8px; padding: 30px; text-align: center; }
         .result-card.lulus { background-color: #E8F5E9; border: 2px solid var(--success-green); }
@@ -60,13 +70,26 @@
         .result-card .result-text { font-size: 1.1rem; line-height: 1.6; margin-top: 20px; }
         .result-text strong { font-weight: 600; }
         .info-tambahan { margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border-color); font-size: 0.95rem; color: #666; }
+        
         .page-footer { text-align: center; margin-top: auto; padding: 20px; font-size: 0.9rem; color: #777; }
         .fade-in { animation: fadeIn 0.6s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .floating-help-btn { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background-color: var(--whatsapp-green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); text-decoration: none; z-index: 999; transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .floating-help-btn:hover { transform: scale(1.1); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); }
         .floating-help-btn svg { width: 32px; height: 32px; fill: currentColor; }
-        @media (max-width: 600px) { .container { padding: 10px; } .page-header { padding: 30px 15px; } .page-header h1 { font-size: 1.6rem; } .page-header p { font-size: 1rem; } .content-card { padding: 20px; margin-top: -40px; } .result-card { padding: 20px; } .result-card h2 { font-size: 1.5rem; } .result-card .student-name { font-size: 1.3rem; } .result-card .result-text { font-size: 1rem; } .floating-help-btn { width: 55px; height: 55px; bottom: 20px; right: 20px; } .floating-help-btn svg { width: 28px; height: 28px; } }
+        
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            .page-header h1 { font-size: 1.6rem; }
+            .page-header p { font-size: 1rem; }
+            .content-card { padding: 20px; margin-top: -40px; }
+            .result-card h2 { font-size: 1.5rem; }
+            .result-card .student-name { font-size: 1.3rem; }
+            .timer { gap: 10px; }
+            .timer-block { min-width: 65px; padding: 8px; }
+            .timer-block .number { font-size: 1.8rem; }
+            .floating-help-btn { width: 55px; height: 55px; bottom: 20px; right: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -87,6 +110,7 @@
 
         <main class="container">
             <div class="content-card">
+                <!-- Kontainer untuk form pencarian, awalnya disembunyikan -->
                 <div id="searchContainer" style="display: none;">
                     <form id="searchForm">
                         <p>Silakan masukkan Nomor Induk Siswa Nasional (NISN) Anda untuk melihat hasil seleksi.</p>
@@ -101,22 +125,25 @@
                     <a href="lupa-nisn.html" style="display:block; text-align:center; margin-top:20px; font-size:0.9rem;">Lupa atau tidak tahu NISN Anda? Klik di sini.</a>
                 </div>
 
-                <!-- ============================================== -->
-                <!-- INI PERBAIKAN STRUKTUR HTML YANG PALING PENTING -->
-                <!-- ============================================== -->
-                <div class="loader-container" id="loader-container">
-                    <div class="loader"></div>
+                <!-- Kontainer untuk countdown timer, awalnya disembunyikan -->
+                <div id="countdown-container">
+                    <p id="countdown-message"></p>
+                    <div class="timer">
+                        <div class="timer-block"><div id="days" class="number">00</div><div class="label">Hari</div></div>
+                        <div class="timer-block"><div id="hours" class="number">00</div><div class="label">Jam</div></div>
+                        <div class="timer-block"><div id="minutes" class="number">00</div><div class="label">Menit</div></div>
+                        <div class="timer-block"><div id="seconds" class="number">00</div><div class="label">Detik</div></div>
+                    </div>
                 </div>
-                
+
+                <!-- Kontainer untuk loader, pesan, dan hasil pencarian -->
+                <div class="loader-container" id="loader-container"><div class="loader"></div></div>
                 <div class="message-container" id="message-container"></div>
                 <div class="result-container" id="result-container"></div>
             </div>
         </main>
 
-        <footer class="page-footer">
-            <p id="footerCopyright"></p>
-        </footer>
-        
+        <footer class="page-footer"><p id="footerCopyright"></p></footer>
         <a id="floatingHelpBtn" href="" class="floating-help-btn" target="_blank" aria-label="Bantuan via WhatsApp">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.8 0-67.6-9.5-97.2-26.7l-7-4.1-72.2 19L56 353.7l-4.4-7.3c-18.4-30.6-28.2-66.2-28.2-103.3 0-108.7 88.4-197.1 197.1-197.1 53.3 0 104.1 20.8 141.1 57.8 37.1 37.1 57.8 87.8 57.8 141.1-.1 108.6-88.5 197-197.1 197z"/></svg>
         </a>
@@ -125,6 +152,7 @@
     <script>
         const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxwJppG4y0S4D9uvuM7LowP5JQyO8YsOXwttk8adBNt8dxMrUyxX-_SN64l2aVksRFj/exec';
 
+        // Referensi Elemen
         const pagePreloader = document.getElementById('page-preloader');
         const appContainer = document.getElementById('app-container');
         const favicon = document.getElementById('favicon');
@@ -132,6 +160,8 @@
         const headerTitle = document.getElementById('headerTitle');
         const headerSubtitle = document.getElementById('headerSubtitle');
         const searchContainer = document.getElementById('searchContainer');
+        const countdownContainer = document.getElementById('countdown-container');
+        const countdownMessage = document.getElementById('countdown-message');
         const searchForm = document.getElementById('searchForm');
         const nisnInput = document.getElementById('nisnInput');
         const submitButton = document.getElementById('submitButton');
@@ -140,6 +170,7 @@
         const messageContainer = document.getElementById('message-container');
         const footerCopyright = document.getElementById('footerCopyright');
         const floatingHelpBtn = document.getElementById('floatingHelpBtn');
+        let timerInterval = null;
 
         document.addEventListener('DOMContentLoaded', initializePage);
 
@@ -148,8 +179,11 @@
                 const response = await fetch(WEB_APP_URL);
                 const result = await response.json();
                 populatePage(result.settings);
-                if (result.status === 'closed') { showAnnouncementClosed(result.message); } 
-                else { searchContainer.style.display = 'block'; }
+                if (result.status === 'closed') {
+                    showAnnouncementClosed(result);
+                } else {
+                    searchContainer.style.display = 'block';
+                }
             } catch (err) {
                 showError('Gagal memuat konfigurasi. Silakan refresh halaman.');
                 console.error('Initialization Error:', err);
@@ -173,11 +207,40 @@
             floatingHelpBtn.href = `https://wa.me/${waNumber}?text=${waMessage}`;
         }
 
-        function showAnnouncementClosed(message) {
+        function showAnnouncementClosed(result) {
             searchContainer.style.display = 'none';
-            messageContainer.className = 'message-container info-message';
-            messageContainer.textContent = message;
-            messageContainer.style.display = 'block';
+            countdownContainer.style.display = 'block';
+            countdownMessage.textContent = result.settings.pesan_saat_ditutup || "Pengumuman akan dibuka segera.";
+            if (result.settings.tanggal_buka_pengumuman) {
+                startCountdown(result.settings.tanggal_buka_pengumuman);
+            }
+        }
+
+        function startCountdown(targetDateString) {
+            const countDownDate = new Date(targetDateString.replace(" ", "T")).getTime();
+            if (isNaN(countDownDate)) {
+                countdownContainer.innerHTML = "<p>Pengaturan waktu pengumuman tidak valid.</p>"; return;
+            }
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = countDownDate - now;
+
+                if (distance < 0) {
+                    clearInterval(timerInterval);
+                    countdownContainer.style.display = 'none';
+                    searchContainer.style.display = 'block';
+                    return;
+                }
+                const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+                const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+                document.getElementById('days').innerText = days;
+                document.getElementById('hours').innerText = hours;
+                document.getElementById('minutes').innerText = minutes;
+                document.getElementById('seconds').innerText = seconds;
+            }, 1000);
         }
 
         searchForm.addEventListener('submit', function(e) {
@@ -191,7 +254,6 @@
             messageContainer.style.display = 'none';
             loaderContainer.style.display = 'block';
             
-            // Menggunakan setTimeout untuk memastikan browser merender loader
             setTimeout(() => {
                 fetch(`${WEB_APP_URL}?nisn=${nisn}`)
                     .then(response => response.json())
@@ -219,7 +281,7 @@
             const confirmationHTML = `<div class="confirmation-details"><strong>NISN:</strong> ${data.nisn} | <strong>Asal SMP:</strong> ${data.asal_smp}</div>`;
             let resultHTML;
             if (isLulus) {
-                resultHTML = `<div class="result-card fade-in ${statusClass}"><h2>SELAMAT! ANDA DINYATAKAN LULUS</h2><p class="student-name">${data.nama}</p>${confirmationHTML}<p class="result-text">Berdasarkan hasil seleksi SPMB ${settings.nama_sekolah} Tahun Ajaran ${settings.tahun_ajaran}, Anda telah diterima pada program keahlian:<br><strong>${data.jurusan}</strong>.</p><div class="info-tambahan">Informasi mengenai jadwal dan persyaratan daftar ulang akan diumumkan lebih lanjut melalui website resmi sekolah.</div></div>`;
+                resultHTML = `<div class="result-card fade-in ${statusClass}"><h2>SELAMAT! ANDA DINYATAKAN LULUS</h2><p class="student-name">${data.nama}</p>${confirmationHTML}<p class="result-text">Berdasarkan hasil seleksi SPMB ${settings.nama_sekolah} Tahun Ajaran ${settings.tahun_ajaran}, Anda telah diterima pada program keahlian:<br><strong>${data.jurusan}</strong>.</p><div class="info-tambahan">Silahkan melakukan daftar ulang pada tanggal 1 s.d 3 juli 2025 di SMKN 1 TELAGASARI</div></div>`;
             } else {
                 resultHTML = `<div class="result-card fade-in ${statusClass}"><h2>MOHON MAAF</h2><p class="student-name">${data.nama}</p>${confirmationHTML}<p class="result-text">Berdasarkan hasil seleksi SPMB ${settings.nama_sekolah} Tahun Ajaran ${settings.tahun_ajaran}, dengan berat hati kami sampaikan bahwa Anda dinyatakan <strong>BELUM LULUS</strong> seleksi.</p><div class="info-tambahan">Kami mengucapkan terima kasih atas partisipasi Anda. Tetap semangat dan jangan pernah menyerah dalam meraih cita-cita.</div></div>`;
             }
